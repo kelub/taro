@@ -4,11 +4,23 @@ import (
 	"taro/config"
 	"github.com/gin-gonic/gin"
 	mgo "gopkg.in/mgo.v2"
+	"taro/gin_handlers/server"
 )
 
 
+//environment type Binary or Container images
+func registerEnvTypeAPIs(r *gin.RouterGroup){
+	r.POST("/envtype", server.CreateEnvType)
 
-func registerCloudAPIs(r *gin.Engine){
+}
+
+func registerProjectAPIs(r *gin.RouterGroup){
+	r.POST("/project", server.CreateProject)
+
+}
+
+func registerScriptsAPIs(r *gin.RouterGroup){
+	r.GET("/scripts/pinyin/:hanzi", server.GetPinyin)
 
 }
 
@@ -42,8 +54,8 @@ func startWeb() {
 		session.Close()
 
 	})
-
-	registerCloudAPIs(r)
-
+	v1 := r.Group("/api/v1")
+	registerEnvTypeAPIs(v1)
+	registerScriptsAPIs(v1)
 	r.Run(":8080")
 }
