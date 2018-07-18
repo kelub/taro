@@ -5,7 +5,6 @@ import (
 	"net/http"
 	log "github.com/golang/glog"
 	gitlab "github.com/xanzy/go-gitlab"
-
 	"fmt"
 	"bytes"
 	"io/ioutil"
@@ -32,14 +31,15 @@ type SCMProvider interface {
 	getOauthToken() (string, error)
 	newGitlabClient()(*gitlab.Client, error)
 	ListBranches(repo string) ([]string, error)
+	createMergeRequest(repo string , opts *gitlab.CreateMergeRequestOptions)(string, error)
 }
 
 func New()(*Gitlab) {
-	gitlab := Gitlab{}
-	gitlab.Server = "http://192.168.9.54/"
-	gitlab.Username = "xxx"
-	gitlab.Password = "xxx"
-	return &gitlab
+	g := Gitlab{}
+	g.Server = "http://192.168.9.54/"
+	g.Username = "James"
+	g.Password = "admingitlab"
+	return &g
 }
 
 func (g *Gitlab)getOauthToken()(string , error){
@@ -113,4 +113,27 @@ func (g *Gitlab)ListBranches(repo string)([]string, error){
 		branchNames[i] = branch.Name
 	}
 	return branchNames, nil
+}
+
+func (g *Gitlab)createMergeRequest(repo string , opts *gitlab.CreateMergeRequestOptions)(string, error){
+	mr, resp, err := g.Client.MergeRequests.CreateMergeRequest(repo, opts)
+	//defer resp.Body.Close()
+	//body, err := ioutil.ReadAll(resp.Body)
+	//if err != nil {
+	//	log.Errorf("Fail to request for token as %s", err.Error())
+	//	//return "", err
+	//}
+	//var mrbody interface{}
+	//json.Unmarshal(body,&mrbody)
+	//fmt.Println(mrbody)
+	fmt.Println(resp.Status)
+
+	if err != nil {
+		//log.Errorf("Fail to CreateMergeRequest for %s", repo)
+		fmt.Println( err)
+		return "", err
+	}
+	fmt.Println(mr,resp, err)
+
+	return "", nil
 }
