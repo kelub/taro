@@ -42,6 +42,11 @@ func (dm *DockerManager)ListImages(opt docker_client.ListImagesOptions)([]docker
 	}
 	return docker_lists, nil
 }
+
+func (dm *DockerManager)CreateContainer(opts docker_client.CreateContainerOptions) (*docker_client.Container, error){
+
+}
+
 //func (dm *DockerManager)CreateContainer()(){
 //
 //}
