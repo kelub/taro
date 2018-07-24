@@ -13,11 +13,12 @@ const (
 type DockerClienter interface {
 	ListImages(docker_client.ListImagesOptions)([]docker_client.APIImages, error)
 	CreateContainer(opts docker_client.CreateContainerOptions) (*docker_client.Container, error)
+	StartContainer(id string,hostConfig *docker_client.HostConfig) error
 	//CreateContainer()()
 }
 
 type DockerManager struct {
-	Client DockerClienter
+	Client *docker_client.Client
 	EndPoint   string
 }
 
@@ -44,7 +45,13 @@ func (dm *DockerManager)ListImages(opt docker_client.ListImagesOptions)([]docker
 }
 
 func (dm *DockerManager)CreateContainer(opts docker_client.CreateContainerOptions) (*docker_client.Container, error){
+	container, err := dm.Client.CreateContainer(opts)
+	return container, err
+}
 
+func (dm *DockerManager)StartContainer(id string,hostConfig *docker_client.HostConfig) error{
+	err := dm.Client.StartContainer(id,hostConfig)
+	return err
 }
 
 //func (dm *DockerManager)CreateContainer()(){
